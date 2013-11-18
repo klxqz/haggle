@@ -1,0 +1,49 @@
+<link type='text/css' href='{$wa_app_static_url}plugins/haggle/css/basic.css' rel='stylesheet' media='screen' />
+<!-- IE6 "fix" for the close png image -->
+<!--[if lt IE 7]>
+<link type='text/css' href='{$wa_app_static_url}plugins/haggle/css/basic_ie.css' rel='stylesheet' media='screen' />
+<![endif]-->
+<style>
+    #haggle_table{
+        margin: 0 auto;
+    }
+    #haggle_table td{
+        padding: 5px;
+    }
+</style>
+<script type='text/javascript' src='{$wa_app_static_url}plugins/haggle/js/jquery.simplemodal.js'></script>
+<script type='text/javascript'>
+    jQuery(function($) {
+        $('#haggle_form').submit(function(){
+            var action = $('#cart-form').attr('action');
+            var data = $('#cart-form').serialize();
+            alert(data);
+            return false;
+        });
+        
+        $('.haggle_link').click(function(e) {
+            $('#modal-content').modal();
+        });
+    });
+</script>
+<a class="haggle_link" href="javascript:void(0);">Нашли дешевле?</a>
+<div id="modal-content" style="display: none">
+    <h2 align="center">Нашли дешевле?</h2>
+    <form id="haggle_form">
+        <table  id="haggle_table">
+            <tr>
+                <td>Ссылка на сайт, где дешевле:</td>
+                <td><input type="text" name="url" /></td>
+            </tr>
+            <tr>
+                <td>Своя цена:</td>
+                <td><input type="text" name="price" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center" >
+                    <input type="submit" value="Купить за свою цену"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
