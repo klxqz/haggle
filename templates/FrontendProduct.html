@@ -10,40 +10,65 @@
     #haggle_table td{
         padding: 5px;
     }
+    .response{
+        color: #FF0000;
+        font-weight: bold;
+        text-align: center;
+    }
 </style>
 <script type='text/javascript' src='{$wa_app_static_url}plugins/haggle/js/jquery.simplemodal.js'></script>
 <script type='text/javascript'>
     jQuery(function($) {
-        $('#haggle_form').submit(function(){
-            var action = $('#cart-form').attr('action');
-            var data = $('#cart-form').serialize();
-            alert(data);
+        $('#haggle_form').submit(function() {
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize() + '&' + $('#cart-form').serialize(),
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    if (data.status == 'ok') {
+                        $('#cart-form').submit();
+                        $.modal.close();
+                    } else {
+                        $('.response').text(data.errors);
+                    }
+                }
+            });
+
             return false;
         });
-        
+
         $('.haggle_link').click(function(e) {
             $('#modal-content').modal();
         });
     });
 </script>
-<a class="haggle_link" href="javascript:void(0);">Нашли дешевле?</a>
-<div id="modal-content" style="display: none">
-    <h2 align="center">Нашли дешевле?</h2>
-    <form id="haggle_form">
-        <table  id="haggle_table">
-            <tr>
-                <td>Ссылка на сайт, где дешевле:</td>
-                <td><input type="text" name="url" /></td>
-            </tr>
-            <tr>
-                <td>Своя цена:</td>
-                <td><input type="text" name="price" /></td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center" >
-                    <input type="submit" value="Купить за свою цену"/>
-                </td>
-            </tr>
-        </table>
-    </form>
+<div class="haggle_block">
+    <a class="haggle_link" href="javascript:void(0);">{$settings.text_button}</a>
+    <div id="modal-content" style="display: none">
+        <h2 align="center">{$settings.text_title}</h2>
+
+        <form id="haggle_form" action="{$wa_url}haggle/">
+            <table  id="haggle_table">
+                <tr>
+                    <td>{$settings.text_link}<span class="required">*</span>:</td>
+                    <td><input id="haggle_url" type="text" name="url" /></td>
+                </tr>
+                <tr>
+                    <td>{$settings.text_user_price}<span class="required">*</span>:</td>
+                    <td><input id="haggle_price" type="text" name="price" /></td>
+                </tr>
+                <tr>
+                    <td>{$settings.text_message}:</td>
+                    <td><textarea name="message" cols="40" rows="10" ></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center" >
+                        <input type="submit" value="Купить за свою цену"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <div class="response"></div>
+    </div>
 </div>
