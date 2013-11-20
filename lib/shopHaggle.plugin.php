@@ -58,7 +58,7 @@ class shopHagglePlugin extends shopPlugin {
                     $item_discount = $orig_price - $user_price;
                     if ($item_discount > 0) {
                         $total_discount += $item_discount * $item['quantity'];
-                        $add_comments[] = 'Товар ' . $item['name'] . ' своя цена = ' . $user_price . ' Скидка составила: ' . $item_discount . ($HagglePlugin_item['message'] ? '. Комментарий: ' . $HagglePlugin_item['message'] : '');
+                        $add_comments[] = 'Товар ' . $item['name'] . '(' . $HagglePlugin_item['url'] . ') своя цена = ' . $user_price . ' Скидка составила: ' . $item_discount . ($HagglePlugin_item['message'] ? '. Комментарий: ' . $HagglePlugin_item['message'] : '');
                     }
                 }
             }
