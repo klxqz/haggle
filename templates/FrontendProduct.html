@@ -44,22 +44,22 @@
     });
 </script>
 <div class="haggle_block">
-    <a class="haggle_link" href="javascript:void(0);">{$settings.text_button}</a>
+    <a class="haggle_link" href="javascript:void(0);">{$settings.text_button|escape}</a>
     <div id="modal-content" style="display: none">
-        <h2 align="center">{$settings.text_title}</h2>
+        <h2 align="center">{$settings.text_title|escape}</h2>
 
         <form id="haggle_form" action="{$wa_app_url}haggle/">
             <table  id="haggle_table">
                 <tr>
-                    <td>{$settings.text_link}<span class="required">*</span>:</td>
+                    <td>{$settings.text_link|escape}<span class="required">*</span>:</td>
                     <td><input id="haggle_url" type="text" name="url" /></td>
                 </tr>
                 <tr>
-                    <td>{$settings.text_user_price}<span class="required">*</span>:</td>
+                    <td>{$settings.text_user_price|escape}<span class="required">*</span>:</td>
                     <td><input id="haggle_price" type="text" name="price" /></td>
                 </tr>
                 <tr>
-                    <td>{$settings.text_message}:</td>
+                    <td>{$settings.text_message|escape}:</td>
                     <td><textarea name="message" cols="40" rows="10" ></textarea></td>
                 </tr>
                 <tr>
