@@ -26,7 +26,9 @@ class shopHagglePlugin extends shopPlugin {
                 if (isset($HagglePlugin[$index])) {
                     $HagglePlugin_item = $HagglePlugin[$index];
                     $orig_price = $product['price'];
+                    $orig_price = shop_currency($orig_price, null, null, false);
                     $user_price = $HagglePlugin_item['price'];
+                    $user_price = shop_currency($user_price, $HagglePlugin_item['currency'], null, false);
                     $item_discount = $orig_price - $user_price;
                     if ($item_discount > 0) {
                         $total_discount += $item_discount * $item['quantity'];

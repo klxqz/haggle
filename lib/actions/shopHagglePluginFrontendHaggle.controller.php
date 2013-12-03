@@ -18,12 +18,24 @@ class shopHagglePluginFrontendHaggleController extends waJsonController {
             $this->errors = 'Заполните обязательные поля';
             return;
         }
+        if (!is_numeric($price)) {
+            $this->errors = 'Цена должна быть числом';
+            return;
+        }
+        if ($price < 0) {
+            $this->errors = 'Цена должна быть больше нуля';
+            return;
+        }
         if ($features) {
             $product_features_model = new shopProductFeaturesModel();
             $sku_id = $product_features_model->getSkuByFeatures($product_id, $features);
         }
+        
+        $currency = wa('shop')->getConfig()->getCurrency(false);
 
-        $data = array('price' => (float) $price,
+        $data = array(
+            'price' => (float) $price,
+            'currency' => $currency,
             'product_id' => $product_id,
             'quantity' => $quantity,
             'sku_id' => $sku_id,
