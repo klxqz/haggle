@@ -29,7 +29,7 @@
         $('#haggle_form').submit(function() {
 
             var required = false;
-            $('.required_field').each(function() {
+            $('.haggle_required_field').each(function() {
                 if (!$(this).val().length) {
                     required = true;
                     $(this).css('border', '2px solid red');
@@ -65,7 +65,7 @@
             }
             $('.response').show();
             setTimeout(function() {
-                $('.required_field').css('border', '');
+                $('.haggle_required_field').css('border', '');
                 $('.response').hide();
             }, 5000);
 
@@ -86,11 +86,11 @@
             <table  id="haggle_table">
                 <tr>
                     <td>{$settings.text_link|escape}<span class="required">*</span>:</td>
-                    <td><input id="haggle_url" class="required_field" type="text" name="url" /></td>
+                    <td><input id="haggle_url" class="haggle_required_field" type="text" name="url" /></td>
                 </tr>
                 <tr>
                     <td>{$settings.text_user_price|escape}<span class="required">*</span>:</td>
-                    <td><input id="haggle_price" class="required_field" type="text" name="price" /></td>
+                    <td><input id="haggle_price" class="haggle_required_field" type="text" name="price" /></td>
                 </tr>
                 <tr>
                     <td>{$settings.text_message|escape}:</td>

@@ -21,11 +21,10 @@ class shopHagglePlugin extends shopPlugin {
             $HagglePlugin = $session->read('HagglePlugin', array());
             $total_discount = 0;
             foreach ($params['order']['items'] as $item) {
-                $product = $item['product'];
-                $index = $product['id'] . '_' . $item['sku_id'];
+                $index = $item['product_id'] . '_' . $item['sku_id'];
                 if (isset($HagglePlugin[$index])) {
                     $HagglePlugin_item = $HagglePlugin[$index];
-                    $orig_price = $product['price'];
+                    $orig_price = $item['price'];
                     $orig_price = shop_currency($orig_price, null, null, false);
                     $user_price = $HagglePlugin_item['price'];
                     $user_price = shop_currency($user_price, $HagglePlugin_item['currency'], null, false);
