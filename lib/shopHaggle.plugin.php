@@ -6,12 +6,21 @@
  */
 class shopHagglePlugin extends shopPlugin {
 
+    protected static $plugin_id = array('shop', 'haggle');
+
     public function frontendProduct() {
-        if ($this->getSettings('status')) {
+        if ($this->getSettings('default_output')) {
+            return array('cart' => self::display());
+        }
+    }
+
+    public static function display() {
+        $app_settings_model = new waAppSettingsModel();
+        if ($app_settings_model->get(self::$plugin_id, 'status')) {
             $view = wa()->getView();
-            $view->assign('settings', $this->getSettings());
+            $view->assign('settings', $app_settings_model->get(self::$plugin_id));
             $html = $view->fetch('plugins/haggle/templates/FrontendProduct.html');
-            return array('cart' => $html);
+            return $html;
         }
     }
 

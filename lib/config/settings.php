@@ -15,6 +15,16 @@ return array(
             '1' => 'Включен',
         )
     ),
+    'default_output' => array(
+        'title' => 'Вывод плагина в стандартном месте',
+        'description' => '',
+        'value' => '1',
+        'control_type' => waHtmlControl::SELECT,
+        'options' => array(
+            '0' => 'Выключен',
+            '1' => 'Включен',
+        )
+    ),
     'text_button' => array(
         'title' => 'Текст кнопки "Нашли дешевле?"',
         'description' => '',
