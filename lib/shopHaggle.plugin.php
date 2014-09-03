@@ -19,7 +19,8 @@ class shopHagglePlugin extends shopPlugin {
         if ($app_settings_model->get(self::$plugin_id, 'status')) {
             $view = wa()->getView();
             $view->assign('settings', $app_settings_model->get(self::$plugin_id));
-            $html = $view->fetch('plugins/haggle/templates/FrontendProduct.html');
+            $template_path = wa()->getAppPath('plugins/haggle/templates/FrontendProduct.html', 'shop');
+            $html = $view->fetch($template_path);
             return $html;
         }
     }
