@@ -5,5 +5,6 @@
  * @link http://wa-plugins.ru/
  */
 return array(
-    'haggle/' => 'frontend/haggle'
+    'haggle/' => 'frontend/haggle',
+    'haggle/addProduct/' => 'frontend/addProduct'
 );

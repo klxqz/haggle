@@ -6,21 +6,49 @@
  */
 class shopHagglePlugin extends shopPlugin {
 
-    protected static $plugin_id = array('shop', 'haggle');
+    public static $plugin_id = array('shop', 'haggle');
 
-    public function frontendProduct() {
-        if ($this->getSettings('default_output')) {
-            return array('cart' => self::display());
+    public function frontendHead() {
+        if ($this->getSettings('status')) {
+            if ($this->getSettings('modal_type') == 'jquery_ui') {
+                waSystem::getInstance()->getResponse()->addCss('wa-content/css/jquery-ui/jquery-ui-1.7.2.custom.css');
+                waSystem::getInstance()->getResponse()->addCss('plugins/haggle/css/themes/' . $this->getSettings('theme') . '/jquery.ui.theme.css', 'shop');
+
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.core.min.js');
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.widget.min.js');
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.mouse.min.js');
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.position.min.js');
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.button.min.js');
+                waSystem::getInstance()->getResponse()->addJs('wa-content/js/jquery-ui/jquery.ui.dialog.min.js');
+            } else {
+                waSystem::getInstance()->getResponse()->addCss('plugins/haggle/css/basic.css', 'shop');
+                waSystem::getInstance()->getResponse()->addJs('plugins/haggle/js/jquery.simplemodal.js', 'shop');
+            }
+            waSystem::getInstance()->getResponse()->addJs('plugins/haggle/js/haggle.js', 'shop');
+
+            $html = "<script type=\"text/javascript\">
+                            $(function () {
+                                $.haggle.init({
+                                    'haggle_url': '" . wa()->getRouteUrl('shop/frontend/haggle') . "',
+                                    'modal_type': '" . $this->getSettings('modal_type') . "'
+                                });
+                            });
+                    </script>";
+
+            return $html;
         }
     }
 
-    public static function display() {
+    public function frontendProduct($product) {
+        if ($this->getSettings('default_output')) {
+            return array($this->getSettings('frontend_product') => self::display(array('product_id' => $product->id)));
+        }
+    }
+
+    public static function display($data) {
         $app_settings_model = new waAppSettingsModel();
         if ($app_settings_model->get(self::$plugin_id, 'status')) {
-            $view = wa()->getView();
-            $view->assign('settings', $app_settings_model->get(self::$plugin_id));
-            $template_path = wa()->getAppPath('plugins/haggle/templates/FrontendProduct.html', 'shop');
-            $html = $view->fetch($template_path);
+            $html = '<a class="haggle_link" data-json="' . htmlspecialchars(json_encode($data)) . '" href="#">' . $app_settings_model->get(self::$plugin_id, 'text_button') . '</a>';
             return $html;
         }
     }
