@@ -6,5 +6,5 @@
  */
 return array(
     'haggle/' => 'frontend/haggle',
-    'haggle/addProduct/' => 'frontend/addProduct'
+    'haggle/send/' => 'frontend/sendHaggle',
 );

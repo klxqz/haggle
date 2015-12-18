@@ -1,0 +1,83 @@
+<link rel="stylesheet" href="{$wa_app_static_url}plugins/haggle/css/haggle.css">
+
+<h1 id="haggle-title" class="align-center">{$settings.title}</h1>
+
+{if !empty($settings.show_product_name)}
+    <h2 id="haggle-product-name" class="align-center">{$product.name}</h2>
+{/if}
+<form id="haggle-form">
+    <input type="hidden" name="product_id" value="{$product.id}" />
+    <div class="haggle-fields">
+        {foreach $settings.form_fields as $index => $form_field}
+            <div class="haggle-field align-center">
+                {if $form_field.type == 'comment'}
+                    <span{if $form_field.required} class="required"{/if}>
+                        <textarea rows="4" name="haggle[{$index}]" placeholder="{$form_field.name|escape}"></textarea>
+                    </span>
+                {elseif $form_field.type == 'submit'}
+                    <input type="submit" value="{$form_field.name|escape}" />
+                {elseif $form_field.type == 'price'}
+                    <span{if $form_field.required} class="required"{/if}>
+                        <input type="text" name="price" placeholder="{$form_field.name|escape}" />
+                    </span>
+                {else}
+                    <span{if $form_field.required} class="required"{/if}>
+                        <input type="text" name="haggle[{$index}]" placeholder="{$form_field.name|escape}" />
+                    </span>
+                {/if}
+            </div>
+        {/foreach}
+    </div>
+</form>
+<p id="haggle-response" class="align-center"></p>
+<script type="text/javascript" src="{$wa_app_static_url}plugins/haggle/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        $("form#haggle-form").validate({
+            rules: {
+                terms: {
+                    required: true
+                }
+            },
+            messages: {
+                terms: "Это поле обязательное для заполнения"
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: '{$wa->getUrl('shop/frontend/sendHaggle')}',
+                    data: $(form).serialize(),
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status == 'ok') {
+                            $('#haggle-form').hide();
+                            $('#haggle-response').html(response.data);
+                        } else {
+                            alert(response.errors.join(' '));
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
+        $('form#haggle-form .required input').each(function () {
+            $(this).rules('add', {
+                required: true,
+                messages: {
+                    required: "Это поле обязательное для заполнения"
+                }
+            });
+        });
+
+
+    });
+</script>
+
+
+
+
+

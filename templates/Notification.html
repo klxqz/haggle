@@ -1,0 +1,23 @@
+<h3>Покупатель хочет поторговаться!</h3>
+
+<p>
+    Покупатель предлагает <strong>{shop_currency($request.price)}</strong>  за товар <strong>"{$request.product.name}"</strong>, 
+    который стоит в Вашем интернет-магазине <strong>{shop_currency($request.product.price)}</strong>
+</p>
+<p>
+    Если Вы согласитесь с ценой покупателя, в этом случае скидка на товар составит 
+    <strong>{shop_currency($request.product.price - $request.price)} (или {round(($request.product.price - $request.price) / $request.product.price * 100)}%)</strong>
+</p>
+
+<table class="table">
+    {foreach $request.additional_fields as $name =>  $value}
+        <tr>
+            <td>
+                <strong>{$name}:</strong>
+            </td>
+            <td>
+                {$value}
+            </td>
+        </tr>
+    {/foreach}
+</table>

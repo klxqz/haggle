@@ -6,16 +6,16 @@
  */
 return array(
     'name' => 'Торговаться',
-    'description' => 'Покупатель заказывает товар по своей цене',
+    'description' => 'Покупатель предлагает свою цену за товар',
     'vendor' => '985310',
-    'version' => '2.0.0',
+    'version' => '3.0.0',
     'img' => 'img/haggle.png',
+    'shop_settings' => true,
     'frontend' => true,
     'handlers' => array(
+        'backend_menu' => 'backendMenu',
         'frontend_head' => 'frontendHead',
         'frontend_product' => 'frontendProduct',
-        'order_calculate_discount' => 'orderCalculateDiscount',
-        'order_action.create' => 'orderActionCreate',
     ),
 );
 //EOF

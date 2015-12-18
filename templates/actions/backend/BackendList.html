@@ -1,0 +1,96 @@
+<h1>Запросы</h1>
+
+<div class="block">
+    <a class="inline delete-selected" href="#"><i class="icon16 delete"></i>Удалить выделенные</a>
+</div>
+<table class="zebra single-lined padded" id="haggle-list">
+    <thead>
+        <tr class="header">
+            <th>
+                <input type="checkbox" id="select-all">
+            </th>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Товар</th>
+            <th>Цена в магазине</th>
+            <th>Цена покупателя</th>
+            <th>Скидка</th>
+            <th>Покупатель</th>
+            <th>Дополнительные поля</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach $requests as $request}
+            <tr data-id="{$request.id}">
+                <td>
+                    <input class="delete-checkbox" type="checkbox" name="id[{$request.id}]" value="1">
+                </td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>#{$request.id}</td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>{$request.datetime|wa_datetime:"humandatetime"}</td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>
+                    {if !empty($request.product)}
+                        <a target="_blank" href="?action=products#/product/{$request.product.id}/">{$request.product.name}</a>
+                    {else}
+                        Товар не определен
+                    {/if}
+                </td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>
+                    {if !empty($request.product)}
+                        {shop_currency($request.product.price)}
+                    {else}
+                        Товар не определен
+                    {/if}
+                </td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>{shop_currency($request.price)}</td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>
+                    {if !empty($request.product)}
+                        {shop_currency($request.product.price - $request.price)} ({round(($request.product.price - $request.price)/$request.product.price*100)}%)
+                    {else}
+                        Товар не определен
+                    {/if}
+                </td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>
+                    {if !empty($request.contact)}
+                        <a target="_blank" href="?action=customers#/id/{$request.contact.id}/">{$request.contact.name}</a>
+                    {else}
+                        Неавторизован
+                    {/if}
+                </td>
+                <td>
+                    {if !empty($request.additional_fields)}
+                        <ul class="menu-v">
+                            {foreach $request.additional_fields as $name => $value}
+                                <li>
+                                    <strong>{$name}:</strong> {$value}
+                                </li>
+                            {/foreach}
+                        </ul>
+                    {/if}
+                </td>
+                <td>
+                    <a class="inline delete-button" href="#"><i class="icon16 delete"></i></a>
+                </td>
+            </tr>
+        {/foreach}
+    </tbody>
+</table>
+
+<div class="lazyloading">
+    <div class="lazyloading-progress-string">{$offset + $count} из {$total_count}</div><br>
+    <span class="lazyloading-progress" style="display:none">
+        <i class="icon16 loading"></i> [`Loading`]
+    </span>
+</div>
+{if !$lazy}
+    <script type="text/javascript" src="{$wa_app_static_url}plugins/haggle/js/lazy.load.js?v={$wa->version()}"></script>
+    <script>
+        $(function () {
+            $.haggle.initLazyLoad({
+                auto: true,
+                total_count: {$total_count},
+                count: {$count}
+            });
+        });
+    </script>
+{/if}
