@@ -14,6 +14,7 @@
             <th>Товар</th>
             <th>Цена в магазине</th>
             <th>Цена покупателя</th>
+            <th>Закупочная цена</th>
             <th>Скидка</th>
             <th>Покупатель</th>
             <th>Дополнительные поля</th>
@@ -50,6 +51,7 @@
                         Товар не определен
                     {/if}
                 </td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>{shop_currency($request.purchase_price)}</td>
                 <td{if !$request.read} style="font-weight:bold;"{/if}>
                     {if !empty($request.contact)}
                         <a target="_blank" href="?action=customers#/id/{$request.contact.id}/">{$request.contact.name}</a>
@@ -62,7 +64,12 @@
                         <ul class="menu-v">
                             {foreach $request.additional_fields as $name => $value}
                                 <li>
-                                    <strong>{$name}:</strong> {$value}
+                                    <strong>{$name}:</strong> 
+                                    {if $name=='Сайт, где дешевле'}
+                                        <a target="_blank" href="{$value}">{$value}</a>
+                                    {else}
+                                        {$value}
+                                    {/if}
                                 </li>
                             {/foreach}
                         </ul>
