@@ -10,7 +10,7 @@ class shopHagglePluginBackendDeleteController extends waJsonController {
         try {
             $model = new shopHagglePluginModel();
             if ($ids = waRequest::post('id', null, waRequest::TYPE_ARRAY_INT)) {
-                foreach ($ids as $id => $val) {
+                foreach ($ids as $id) {
                     $model->deleteById($id);
                 }
             } elseif ($id = waRequest::post('id', 0, waRequest::TYPE_INT)) {

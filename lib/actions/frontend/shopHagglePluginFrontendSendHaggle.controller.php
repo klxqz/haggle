@@ -8,8 +8,8 @@ class shopHagglePluginFrontendSendHaggleController extends waJsonController {
 
     public function execute() {
         try {
-            $app_settings_model = new waAppSettingsModel();
-            $settings = $app_settings_model->get(shopHagglePlugin::$plugin_id);
+            $plugin = wa()->getPlugin('haggle');
+            $settings = $plugin->getSettings();
             $product_id = waRequest::post('product_id', 0, waRequest::TYPE_INT);
             $haggle = waRequest::post('haggle', array(), waRequest::TYPE_ARRAY);
             $price = waRequest::post('price');
@@ -20,6 +20,7 @@ class shopHagglePluginFrontendSendHaggleController extends waJsonController {
             $data = array(
                 'datetime' => date('Y-m-d H:i:s'),
                 'product_id' => $product_id,
+                'currency' => wa('shop')->getConfig()->getCurrency(false),
                 'price' => $price,
                 'additional_fields' => json_encode($haggle),
                 'contact_id' => wa()->getUser()->getId(),
@@ -38,12 +39,8 @@ class shopHagglePluginFrontendSendHaggleController extends waJsonController {
     }
 
     private function prepareFields($fields = array()) {
-        $app_settings_model = new waAppSettingsModel();
-        $settings = $app_settings_model->get(shopHagglePlugin::$plugin_id);
-        $form_fields = array();
-        if (!empty($settings['form_fields'])) {
-            $form_fields = json_decode($settings['form_fields'], true);
-        }
+        $plugin = wa()->getPlugin('haggle');
+        $form_fields = $plugin->getSettings('form_fields');
 
         $result = array();
         foreach ($fields as $index => $field) {
@@ -56,8 +53,7 @@ class shopHagglePluginFrontendSendHaggleController extends waJsonController {
     }
 
     private function sendNotification($request) {
-        $app_settings_model = new waAppSettingsModel();
-        $settings = $app_settings_model->get(shopHagglePlugin::$plugin_id);
+        $settings = wa()->getPlugin('haggle')->getSettings();
 
         $general = wa('shop')->getConfig()->getGeneralSettings();
 

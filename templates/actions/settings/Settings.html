@@ -1,3 +1,4 @@
+{$settings = $plugin->getSettings()}
 {function name=formField sortable=1}
     <tr data-id="{$index}">
         <td class="min-width">
@@ -46,6 +47,14 @@
 
 <script src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.sortable.min.js"></script>
 <style type="text/css">
+    #wa .CodeMirror{
+        border: 1px solid #eee;
+    }
+    .CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
     .plugin-menu{
         float: right;
         list-style: none;
@@ -67,13 +76,21 @@
         overflow: auto;
         padding: 0.5em;
     }
+    .field-group.fixed{
+        width: calc(100% - 253px);
+        position: fixed;
+        background: #fff;
+        z-index: 99;
+        margin: 0;
+        bottom: 0;
+    }
 </style>
-<h1>Торговаться</h1>
+<h1>{$plugin->getName()}</h1>
 
 <ul class="plugin-menu">
     {*<li><a target="_blank" href="https://www.webasyst.ru/store/plugin/shop/haggle/reviews/"><i class="icon16 star"></i>Оставить отзыв о плагине</a></li>*}
-    <li><a href="mailto:support@wa-plugins.ru"><i class="icon16 ss pt hammer"></i>Поддержка</a></li>
-    {*<li><a target="_blank" href="http://wa-plugins.ru/"><i class="icon16 ss pt globe"></i>WA-PLUGINS.ru - сайт разработчика</a></li>*}
+    <li><a target="_blank" href="http://support.wa-plugins.ru/"><i class="icon16 ss pt hammer"></i>Поддержка</a></li>
+        {*<li><a target="_blank" href="http://wa-plugins.ru/"><i class="icon16 ss pt globe"></i>WA-PLUGINS.ru - сайт разработчика</a></li>*}
 </ul>
 <div class="block">
     {literal}
@@ -148,7 +165,16 @@
                     Текст кнопки «Торговаться»
                 </div>
                 <div class="value">
-                    <input type="text" name="shop_haggle[button_text]" value="{$settings.button_text|default:''|escape}">
+                    <input type="text" name="shop_haggle[button_text]" value="{$settings.button_text|default:'Торговаться'|escape}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">
+                    Шаблон кнопки «Торговаться»
+                </div>
+                <div class="value">
+                    <input type="text" name="shop_haggle[button_template]" value="{$settings.button_template|default:'<button class="button haggle-button" data-product-id="%d">%s</button>'|escape}">
+                    <p class="hint">Класс «<strong>haggle-button</strong>» для кнопки обязателен</p>
                 </div>
             </div>
         </div>
@@ -238,12 +264,38 @@
 
         </div>
 
-        <div class="field"{if !$settings.status} style="display:none"{/if}>
-            <div class="value submit">
-                <input type="submit" class="button green" value="Сохранить">
-                <span id="plugins-settings-form-status" style="display:none">
-                    <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
-                </span>
+        <div class="field-group">
+            <h3>Шаблоны</h3>
+            <div class="templates-block">
+                {foreach $templates as $key  => $template}
+                    <div class="field">
+                        <div class="name">
+                            {$template.name|default:'Шаблон'}<br /><span class="hint">HTML + Smarty</span>
+                        </div>
+                        <div class="value no-shift">
+                            <a class="edit-template" href="#"><i class="icon16 edit"></i>Изменить шаблон</a><br/><br/>
+                            <div class="template-block">
+                                <textarea id="sf-template-{$key}" name="templates[{$key}][template]">{$template.template|default:''|escape}</textarea>
+                                {if $template.change_tpl|default:0}
+                                    <p class="gray"><i class="icon16 exclamation"></i>Внимание! Шаблон по умолчанию был изменен</p>
+                                    <input type="checkbox" name="templates[{$key}][reset_tpl]" value="1"  /> - Сбросить изменения, использовать шаблон по умолчанию
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                {/foreach}
+            </div>
+        </div>
+
+        <div class="field-group submit fixed"{if !$settings.status|default:0} style="display:none"{/if}>
+            <div class="field">
+                <div class="value submit">
+                    <input type="submit" class="button green" value="Сохранить">
+                    <span class="hint">Ctrl+S</span>
+                    <span id="plugins-settings-form-status" style="display:none">
+                        <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+                    </span>
+                </div>
             </div>
         </div>
     </form>
@@ -274,8 +326,17 @@
         </tr>
     </script>
 {/literal}
+{$tpls = []}
+{foreach $templates as $key => $template}
+    {$mode = $template.tpl_ext}
+    {if $template.tpl_ext == 'js'}
+        {$mode = 'javascript'}
+    {/if}
+    {$tpls[] = ['id' => "sf-template-`$key`", 'mode' => $mode]}
+{/foreach}
 <script type="text/javascript">
     $(function () {
+        var templates = {json_encode($tpls)};
         $('.add-field-button').click(function () {
             var max_index = 0;
             $('#form-fields tr').each(function () {
@@ -317,6 +378,34 @@
             var f = $("#plugins-settings-form");
             $.post(f.attr('action'), f.serialize());
         });
+
+        for (var i = 0; i < templates.length; i++) {
+            CodeMirror.fromTextArea(document.getElementById(templates[i].id), {
+                mode: "text/" + templates[i].mode,
+                tabMode: "indent",
+                height: "dynamic",
+                lineWrapping: true
+            });
+        }
+
+        $('.template-block').hide();
+        $('.edit-template').click(function () {
+            $(this).closest('.field').find('.template-block').slideToggle('slow');
+            return false;
+        });
+
+        $(window).scroll(function () {
+            var item = $('.field-group.submit');
+            var form_bottom_position = $('#plugins-settings-form').offset().top + $('#plugins-settings-form').height();
+            var scroll_bottom = $(this).scrollTop() + $(window).height();
+            if (form_bottom_position - scroll_bottom > 120 && !item.hasClass("fixed")) {
+                item.hide();
+                item.addClass("fixed").slideToggle(200);
+            } else if (form_bottom_position - scroll_bottom < 100 && item.hasClass("fixed")) {
+                item.removeClass("fixed");
+            }
+        }).scroll();
+
     });
 </script>
 

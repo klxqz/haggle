@@ -6,7 +6,54 @@
  */
 class shopHagglePlugin extends shopPlugin {
 
-    public static $plugin_id = array('shop', 'haggle');
+    public static $templates = array(
+        'FrontendHaggle' => array(
+            'name' => 'FrontendHaggle.html',
+            'tpl_path' => 'plugins/haggle/templates/actions/frontend/',
+            'tpl_name' => 'FrontendHaggle',
+            'tpl_ext' => 'html',
+            'public' => false
+        ),
+        'haggle_css' => array(
+            'name' => 'haggle.css',
+            'tpl_path' => 'plugins/haggle/css/',
+            'tpl_name' => 'haggle',
+            'tpl_ext' => 'css',
+            'public' => true
+        ),
+    );
+
+    public function saveSettings($settings = array()) {
+        parent::saveSettings($settings);
+
+        $templates = waRequest::post('templates');
+        foreach ($templates as $template_id => $template) {
+            $s_template = self::$templates[$template_id];
+            if (!empty($template['reset_tpl'])) {
+                $tpl_full_path = $s_template['tpl_path'] . $s_template['tpl_name'] . '.' . $s_template['tpl_ext'];
+                $template_path = wa()->getDataPath($tpl_full_path, $s_template['public'], 'shop', true);
+                @unlink($template_path);
+            } else {
+                $tpl_full_path = $s_template['tpl_path'] . $s_template['tpl_name'] . '.' . $s_template['tpl_ext'];
+                $template_path = wa()->getDataPath($tpl_full_path, $s_template['public'], 'shop', true);
+                if (!file_exists($template_path)) {
+                    $tpl_full_path = $s_template['tpl_path'] . $s_template['tpl_name'] . '.' . $s_template['tpl_ext'];
+                    $template_path = wa()->getAppPath($tpl_full_path, 'shop');
+                }
+                $content = file_get_contents($template_path);
+                if (!empty($template['template']) && strcmp(str_replace("\r", "", $template['template']), str_replace("\r", "", $content)) != 0) {
+                    $tpl_full_path = $s_template['tpl_path'] . $s_template['tpl_name'] . '.' . $s_template['tpl_ext'];
+                    $template_path = wa()->getDataPath($tpl_full_path, $s_template['public'], 'shop', true);
+                    $f = fopen($template_path, 'w');
+                    if (!$f) {
+                        throw new waException('Не удаётся сохранить шаблон. Проверьте права на запись ' . $template_path);
+                    }
+                    fwrite($f, $template['template']);
+                    fclose($f);
+                }
+            }
+        }
+    }
 
     public function backendMenu() {
         if ($this->getSettings('status')) {
@@ -54,11 +101,10 @@ HTML;
     }
 
     public static function display($product) {
-        $app_settings_model = new waAppSettingsModel();
-        $settings = $app_settings_model->get(self::$plugin_id);
-        if ($settings['status']) {
+        $plugin = wa()->getPlugin('haggle');
+        if ($plugin->getSettings('status')) {
             if (!empty($product['id'])) {
-                $html = sprintf('<button class="button haggle-button" data-product-id="%d">%s</button>', $product['id'], $settings['button_text']);
+                $html = sprintf($plugin->getSettings('button_template'), $product['id'], $plugin->getSettings('button_text'));
             } else {
                 $html = 'Задана некорректная переменная $product';
             }

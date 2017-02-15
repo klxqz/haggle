@@ -8,19 +8,18 @@ class shopHagglePluginFrontendHaggleAction extends waViewAction {
 
     public function execute() {
         if ($product_id = waRequest::get('product_id', 0, waRequest::TYPE_INT)) {
-            $app_settings_model = new waAppSettingsModel();
-            $settings = $app_settings_model->get(shopHagglePlugin::$plugin_id);
-
-            if (!empty($settings['form_fields'])) {
-                $settings['form_fields'] = json_decode($settings['form_fields'], true);
-            }
-
-            $this->view->assign('settings', $settings);
+            $plugin = wa()->getPlugin('haggle');
             $product = new shopProduct($product_id);
-            $this->view->assign('product', $product);
+            $this->view->assign(array(
+                'settings' => $plugin->getSettings(),
+                'product' => $product,
+                'haggle_css_url' => shopHaggleHelper::getTemplateUrl('haggle_css'),
+            ));
         } else {
             throw new waException('Не определен product_id');
         }
+        $FrontendHaggle_tmp = shopHaggleHelper::getTemplates('FrontendHaggle');
+        $this->setTemplate($FrontendHaggle_tmp['template_path']);
     }
 
 }

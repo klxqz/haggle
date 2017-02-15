@@ -1,12 +1,13 @@
 <h3>Покупатель хочет поторговаться!</h3>
 
 <p>
-    Покупатель предлагает <strong>{shop_currency($request.price)}</strong>  за товар <strong>"{$request.product.name}"</strong>, 
-    который стоит в Вашем интернет-магазине <strong>{shop_currency($request.product.price)}</strong>
+    Покупатель предлагает <strong>{shop_currency($request.price, $request.currency, $request.currency)}</strong>  за товар <strong>"{$request.product.name}"</strong>, 
+    который стоит в Вашем интернет-магазине <strong>{shop_currency($request.product.price, null, $request.currency)}</strong>
 </p>
 <p>
+    {$product_price = shop_currency($request.product.price, null, $request.currency, false)}
     Если Вы согласитесь с ценой покупателя, в этом случае скидка на товар составит 
-    <strong>{shop_currency($request.product.price - $request.price)} (или {round(($request.product.price - $request.price) / $request.product.price * 100)}%)</strong>
+    <strong>{shop_currency($product_price - $request.price, $request.currency, $request.currency)}  (или {round(($product_price - $request.price) / $product_price * 100)}%)</strong>
 </p>
 
 <table class="table">

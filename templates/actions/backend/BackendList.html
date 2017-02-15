@@ -24,7 +24,7 @@
         {foreach $requests as $request}
             <tr data-id="{$request.id}">
                 <td>
-                    <input class="delete-checkbox" type="checkbox" name="id[{$request.id}]" value="1">
+                    <input class="delete-checkbox" type="checkbox" name="id[]" value="{$request.id}">
                 </td>
                 <td{if !$request.read} style="font-weight:bold;"{/if}>#{$request.id}</td>
                 <td{if !$request.read} style="font-weight:bold;"{/if}>{$request.datetime|wa_datetime:"humandatetime"}</td>
@@ -37,15 +37,17 @@
                 </td>
                 <td{if !$request.read} style="font-weight:bold;"{/if}>
                     {if !empty($request.product)}
-                        {shop_currency($request.product.price)}
+                        {shop_currency($request.product.price, null, $request.currency)}
                     {else}
                         Товар не определен
                     {/if}
                 </td>
-                <td{if !$request.read} style="font-weight:bold;"{/if}>{shop_currency($request.price)}</td>
+                <td{if !$request.read} style="font-weight:bold;"{/if}>{shop_currency($request.price, $request.currency, $request.currency)}</td>
                 <td{if !$request.read} style="font-weight:bold;"{/if}>
                     {if !empty($request.product)}
-                        {shop_currency($request.product.price - $request.price)} ({round(($request.product.price - $request.price)/$request.product.price*100)}%)
+                        {$product_price = shop_currency($request.product.price, null, $request.currency, false)}
+                        {shop_currency($product_price - $request.price, $request.currency, $request.currency)} 
+                        ({round(($product_price - $request.price) / $product_price * 100)}%)
                     {else}
                         Товар не определен
                     {/if}

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{$wa_app_static_url}plugins/haggle/css/haggle.css">
+<link rel="stylesheet" href="{$haggle_css_url}">
 
 <h1 id="haggle-title" class="align-center">{$settings.title}</h1>
 
@@ -33,7 +33,6 @@
 <script type="text/javascript" src="{$wa_app_static_url}plugins/haggle/js/jquery.validate.min.js"></script>
 <script type="text/javascript">
     $(function () {
-
         $("form#haggle-form").validate({
             rules: {
                 terms: {
@@ -72,12 +71,5 @@
                 }
             });
         });
-
-
     });
 </script>
-
-
-
-
-

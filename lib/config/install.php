@@ -9,9 +9,10 @@ $app_settings_model = new waAppSettingsModel();
 $app_settings_model->set($plugin_id, 'status', '1');
 $app_settings_model->set($plugin_id, 'frontend_product_cart', 'cart');
 $app_settings_model->set($plugin_id, 'fancy_box', '1');
+$app_settings_model->set($plugin_id, 'button_template', '<button class="button haggle-button" data-product-id="%d">%s</button>');
 $app_settings_model->set($plugin_id, 'button_text', 'Торговаться');
 $app_settings_model->set($plugin_id, 'email_notification', '1');
-$app_settings_model->set($plugin_id, 'email', '');
+$app_settings_model->set($plugin_id, 'email', 'mail@mail.ru');
 $app_settings_model->set($plugin_id, 'title', 'Ваша цена?');
 $app_settings_model->set($plugin_id, 'show_product_name', '1');
 $form_fields = array(

@@ -9,6 +9,7 @@ return array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'datetime' => array('datetime', 'null' => 0),
         'product_id' => array('int', 11, 'null' => 0),
+        'currency' => array('char', 3, 'null' => 0),
         'price' => array('decimal', "15,4", 'null' => 0),
         'additional_fields' => array('text'),
         'contact_id' => array('int', 11, 'null' => 0),
