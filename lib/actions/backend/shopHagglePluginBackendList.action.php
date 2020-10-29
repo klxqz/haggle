@@ -4,9 +4,11 @@
  * @author wa-plugins.ru <support@wa-plugins.ru>
  * @link http://wa-plugins.ru/
  */
-class shopHagglePluginBackendListAction extends waViewAction {
+class shopHagglePluginBackendListAction extends waViewAction
+{
 
-    public function execute() {
+    public function execute()
+    {
         $lazy = waRequest::get('lazy', 0, waRequest::TYPE_INT);
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = 30;
@@ -15,7 +17,7 @@ class shopHagglePluginBackendListAction extends waViewAction {
         $model = new shopHagglePluginModel();
 
         $sql = "SELECT count(*) " . $this->getSql();
-        $total_count = (int) $model->query($sql)->fetchField();
+        $total_count = (int)$model->query($sql)->fetchField();
 
         $sql = "SELECT * " . $this->getSql() . " LIMIT $offset, $limit";
         $requests = $model->query($sql)->fetchAll();
@@ -42,21 +44,23 @@ class shopHagglePluginBackendListAction extends waViewAction {
         ));
     }
 
-    protected function prepareRequests($requests) {
+    protected function prepareRequests($requests)
+    {
         $product_model = new shopProductModel();
+        $model = new waContactModel();
         foreach ($requests as &$request) {
             $request['additional_fields'] = json_decode($request['additional_fields'], true);
             $request['product'] = $product_model->getById($request['product_id']);
             if ($request['contact_id']) {
-                $request['contact'] = new waContact($request['contact_id']);
+                $request['contact'] = $model->getById($request['contact_id']);
             }
         }
         unset($request);
         return $requests;
     }
 
-    protected function getSql() {
-        $model = new waModel();
+    protected function getSql()
+    {
         $where = array();
         $sql = "FROM `shop_haggle`" . ($where ? " WHERE " . implode(" AND ", $where) : "") . " ORDER BY `id` DESC";
         return $sql;

@@ -8,7 +8,7 @@ return array(
     'name' => 'Торговаться',
     'description' => 'Покупатель предлагает свою цену за товар',
     'vendor' => '985310',
-    'version' => '3.0.2',
+    'version' => '3.0.3',
     'img' => 'img/haggle.png',
     'shop_settings' => true,
     'frontend' => true,

@@ -1,0 +1,13 @@
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - mkdir haggle
+    - mv -vft haggle css img js lib templates vendor
+    - tar -czvf haggle.tar.gz haggle
+  artifacts:
+    name: haggle
+    paths:
+      - haggle.tar.gz
